@@ -13,14 +13,20 @@
 <body>
     <form id="HomePage" runat="server">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="navbar-header text-center">
-        <a class="navbar-brand mb-0 h1 mx-auto d-block">Proiect ASP.NET Aplicație Salarizare - PĂCURARIU Rareș-Adrian</a>
-        <br /><br />
-        <div style="display: inline-flex; align-items: center; justify-content: space-evenly; color: white;">
-            <p id="date" style="margin-right: 20px;"></p>
-            <img src="" id="firstPic" style="width: 200px; height: 200px; border: 1px solid white; margin-right: 20px;" />
-            <img src="" id="secondPic" style="width: 200px; height: 200px; border: 1px solid white; margin-right: 20px;" />
+        <div class="navbar-header text-center">
+          <a class="navbar-brand mb-0 h1 mx-auto d-block">Proiect ASP.NET Aplicație Salarizare - PĂCURARIU Rareș-Adrian</a>
+            <br /><br />
+            <div style="display: flex; justify-content: space-between; color: white; margin: 0 10px;">
+            <div style="display: flex; align-items: center;">
+                <p id="date"></p>
+            </div>
+            <div style="display: flex; align-items: center; margin-left: auto;">
+                <img src="" id="firstPic" style="width: 100px; height: 100px; border: 1px solid white; margin: 0 20px;" />
+                <img src="" id="secondPic" style="width: 100px; height: 100px; border: 1px solid white; margin: 0 20px;" />
+            </div>
         </div>
+        
+        
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 let getRandomImage = () => {
