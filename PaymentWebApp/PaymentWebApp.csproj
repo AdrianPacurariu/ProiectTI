@@ -121,7 +121,7 @@
     <Content Include="Actualizare.aspx" />
     <Content Include="Adaugare.aspx" />
     <Content Include="assets\favicon.ico" />
-    <Content Include="Calcul.aspx" />
+    <Content Include="Editare.aspx" />
     <Content Include="css\styles.css" />
     <Content Include="PaginaEroare.html" />
     <Content Include="Fluturasi.aspx" />
@@ -146,12 +146,12 @@
     <Compile Include="Adaugare.aspx.designer.cs">
       <DependentUpon>Adaugare.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Calcul.aspx.cs">
-      <DependentUpon>Calcul.aspx</DependentUpon>
+    <Compile Include="Editare.aspx.cs">
+      <DependentUpon>Editare.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Calcul.aspx.designer.cs">
-      <DependentUpon>Calcul.aspx</DependentUpon>
+    <Compile Include="Editare.aspx.designer.cs">
+      <DependentUpon>Editare.aspx</DependentUpon>
     </Compile>
     <Compile Include="Fluturasi.aspx.cs">
       <DependentUpon>Fluturasi.aspx</DependentUpon>

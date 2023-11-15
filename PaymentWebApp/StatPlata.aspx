@@ -2,6 +2,13 @@
 
 <asp:Content ID="StatPlata" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container mt-5" id="printableContent">
+        <style>
+            @media print {
+                @page {
+                    size: 297mm 420mm; /*A3*/
+                }
+            }
+        </style>
         <div class="container text-center">
             <div class="mt-5 print-hide">
                 <h2>Stat de plată</h2>
@@ -11,7 +18,7 @@
             <asp:Button ID="btnPrintare" runat="server" Text="Tipărire" CssClass="btn btn-primary" OnClientClick="PrintContent();return false;" />
         </div>
         <div class="text-center">
-            <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CssClass="table table-bordered" style="margin: auto;">
+            <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CssClass="table table-bordered" Style="margin: auto;">
                 <Columns>
                     <asp:TemplateField HeaderText="Poză">
                         <ItemTemplate>

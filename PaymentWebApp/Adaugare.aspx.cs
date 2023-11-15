@@ -28,11 +28,11 @@ namespace PaymentWebApp
             var spor = Request.Form["spor"];
             var premii = Request.Form["premii"];
             var retineri = Request.Form["retineri"];
-            var poza_pusa = Request.Files["poza"];
+            //var poza_pusa = Request.Files["poza"];
 
             if (string.IsNullOrEmpty(nume) || string.IsNullOrEmpty(prenume) || string.IsNullOrEmpty(functie)
         || string.IsNullOrEmpty(salar) || string.IsNullOrEmpty(spor) || string.IsNullOrEmpty(premii)
-        || string.IsNullOrEmpty(retineri) || poza_pusa == null || poza_pusa.ContentLength == 0)
+        || string.IsNullOrEmpty(retineri))
             {
                 string alertScript = "<script>alert('Nu ați completat toate câmpurile!');";
                 alertScript += "window.location.href='Adaugare.aspx';</script>";
@@ -82,7 +82,7 @@ namespace PaymentWebApp
                         }
                         catch (Exception ex)
                         {
-                            string alertScript = "<script>alert('Error: " + ex.Message + "');</script>";
+                            string alertScript = "<script>alert('Eroare: " + ex.Message + "');</script>";
                             Response.Write(alertScript);
                         }
                     }

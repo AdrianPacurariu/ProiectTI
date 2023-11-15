@@ -69,8 +69,6 @@
                         <li><a class="dropdown-item" href="Actualizare.aspx">Actualizare date</a></li>
                         <li><a class="dropdown-item" href="Adaugare.aspx">Adăugare</a></li>
                         <li><a class="dropdown-item" href="Stergere.aspx">Ștergere</a></li>
-                        <li><hr class="dropdown-divider" /></li>
-                        <li><a class="dropdown-item" href="Calcul.aspx">Calcul (dacă este cazul)</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
