@@ -15,28 +15,58 @@ namespace PaymentWebApp
         {
             if (!IsPostBack)
             {
-                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["MySQLConnection"].ConnectionString;
+                BindGridView();
+            }
+        }
 
-                string query = "SELECT nr_crt, nume, prenume, functie, salar_baza, spor, premii_brute, total_brut, retineri, virat_card, poza FROM angajati.gestiune";
+        private void BindGridView()
+        {
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["MySQLConnection"].ConnectionString;
+            string query = "SELECT nr_crt, nume, prenume, functie, salar_baza, spor, premii_brute, total_brut, retineri, virat_card, poza FROM angajati.gestiune";
 
-                using (MySqlConnection conn = new MySqlConnection(connectionString))
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    using (MySqlDataAdapter sda = new MySqlDataAdapter())
                     {
-                        using (MySqlDataAdapter sda = new MySqlDataAdapter())
-                        {
-                            cmd.Connection = conn;
-                            sda.SelectCommand = cmd;
+                        cmd.Connection = conn;
+                        sda.SelectCommand = cmd;
 
-                            DataTable dt = new DataTable();
-                            sda.Fill(dt);
+                        DataTable dt = new DataTable();
+                        sda.Fill(dt);
 
-                            GridView1.DataSource = dt;
-                            GridView1.DataBind();
-                        }
+                        GridView1.DataSource = dt;
+                        GridView1.DataBind();
+
+                        // Calculate total sum for Salar_baza and Virat_card columns
+                        decimal totalSalarBaza = CalculateTotal(dt, "salar_baza");
+                        decimal totalViratCard = CalculateTotal(dt, "virat_card");
+
+                        // Display the sums in the labels below the GridView
+                        lblTotalSalarBaza.Text += totalSalarBaza.ToString() + " RON";
+                        lblTotalViratCard.Text += totalViratCard.ToString() + " RON";
                     }
                 }
             }
+        }
+
+
+
+        private decimal CalculateTotal(DataTable dt, string columnName)
+        {
+            decimal total = 0;
+
+            foreach (DataRow row in dt.Rows)
+            {
+                decimal columnValue;
+                if (decimal.TryParse(row[columnName].ToString(), out columnValue))
+                {
+                    total += columnValue;
+                }
+            }
+
+            return total;
         }
     }
 }
