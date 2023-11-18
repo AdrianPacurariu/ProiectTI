@@ -15,6 +15,18 @@ namespace PaymentWebApp
         {
             if (!IsPostBack)
             {
+                if (Request.QueryString["success"] != null && Session["SuccessMessage"] != null)
+                {
+                    string successMessage = Session["SuccessMessage"].ToString();
+                    Response.Write("<script>alert('" + successMessage + "');</script>");
+                    Session.Remove("SuccessMessage");
+                }
+                else if (Request.QueryString["error"] != null && Session["ErrorMessage"] != null)
+                {
+                    string errorMessage = Session["ErrorMessage"].ToString();
+                    Response.Write("<script>alert('" + errorMessage + "');</script>");
+                    Session.Remove("ErrorMessage");
+                }
                 BindGridView();
             }
         }
