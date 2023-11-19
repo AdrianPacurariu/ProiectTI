@@ -39,7 +39,7 @@ cări, dacă ați introdus un text greșit sau v-ați răzgandit, puteți apăsa
         </div>
 
         <div class="text-center mt-4">
-            <asp:Button ID="btnCreateTables" runat="server" Text="Creare si populare tabele" CssClass="btn btn-primary" OnClick="btnCreateTables_Click" />
+            <asp:Button ID="btnCreateTables" runat="server" Text="Creare și populare tabele" CssClass="btn btn-primary" OnClick="btnCreateTables_Click" />
         </div>
     </div>
 </asp:Content>

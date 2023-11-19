@@ -51,11 +51,9 @@ namespace PaymentWebApp
                         GridView1.DataSource = dt;
                         GridView1.DataBind();
 
-                        // Calculate total sum for Salar_baza and Virat_card columns
                         decimal totalSalarBaza = CalculateTotal(dt, "salar_baza");
                         decimal totalViratCard = CalculateTotal(dt, "virat_card");
 
-                        // Display the sums in the labels below the GridView
                         lblTotalSalarBaza.Text += totalSalarBaza.ToString() + " RON";
                         lblTotalViratCard.Text += totalViratCard.ToString() + " RON";
                     }

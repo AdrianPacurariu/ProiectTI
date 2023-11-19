@@ -83,14 +83,13 @@
         function displayCurrentDate() {
             var today = new Date();
             var dd = String(today.getDate()).padStart(2, '0');
-            var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+            var mm = String(today.getMonth() + 1).padStart(2, '0');
             var yyyy = today.getFullYear();
 
             var currentDate = dd + '/' + mm + '/' + yyyy;
             document.getElementById('MainContent_lblCurrentDate').innerText = 'Data: ' + currentDate;
         }
 
-        // Call the function to display the current date when the page loads
         window.onload = function () {
             displayCurrentDate();
         };
