@@ -1,0 +1,150 @@
+
+INSERT INTO `angajati`.`procente` (`cas_procent`, `cass_procent`, `impozit_procent`)
+VALUES (0.25, 0.10, 0.10);
+
+UPDATE angajati.procente SET cas_procent=x, cass_procent=y, impozit_procent=z // pt a updata singura inregistrare
+
+CREATE TABLE `angajati`.`gestiune` (   `nr_crt` INT NOT NULL AUTO_INCREMENT, `nume` VARCHAR(45) NOT NULL, `prenume` VARCHAR(45) NOT NULL, `functie` VARCHAR(45) NOT NULL,  `salar_baza` INT NOT NULL,  `spor` INT NULL DEFAULT 0,   `premii_brute` INT NULL DEFAULT 0,   `total_brut` INT GENERATED ALWAYS AS (salar_baza * (1 + (spor / 100)) + premii_brute),   `procente_id` INT,   `cas_procent_val` FLOAT,   `cass_procent_val` FLOAT,   `impozit_procent_val` FLOAT,   `brut_impozabil` INT GENERATED ALWAYS AS (total_brut - (total_brut * cas_procent_val) - (total_brut * cass_procent_val)) VIRTUAL,   `cas` INT GENERATED ALWAYS AS (total_brut * cas_procent_val) VIRTUAL,   `cass` INT GENERATED ALWAYS AS (total_brut * cass_procent_val) VIRTUAL,   `impozit` INT GENERATED ALWAYS AS (brut_impozabil * impozit_procent_val) VIRTUAL,   `retineri` INT NULL DEFAULT 0,   `virat_card` INT GENERATED ALWAYS AS (total_brut - impozit - (total_brut * cas_procent_val) - (total_brut * cass_procent_val) - retineri),   `poza` LONGBLOB NULL,   PRIMARY KEY (`nr_crt`) )
+
+DELIMITER //
+
+CREATE TRIGGER before_insert_gestiune 
+BEFORE INSERT ON `angajati`.`gestiune` 
+FOR EACH ROW 
+BEGIN
+   SET NEW.procente_id = 1;
+   SET NEW.cas_procent_val = (SELECT cas_procent FROM `angajati`.`procente` WHERE `id` = NEW.procente_id);
+   SET NEW.cass_procent_val = (SELECT cass_procent FROM `angajati`.`procente` WHERE `id` = NEW.procente_id);
+   SET NEW.impozit_procent_val = (SELECT impozit_procent FROM `angajati`.`procente` WHERE `id` = NEW.procente_id);
+END//
+
+DELIMITER ;
+
+// Insert statement
+INSERT INTO `angajati`.`gestiune` (`nume`, `prenume`, `functie`, `salar_baza`, `spor`, `premii_brute`, `procente_id`, `retineri`, `poza`)
+VALUES ('Pacurariu', 'Adrian', 'Programator', 14770, 5, 1000, 1, 300, NULL);
+
+
+// After update trigger
+DELIMITER //
+CREATE TRIGGER after_update_gestiune AFTER UPDATE ON angajati.gestiune
+FOR EACH ROW
+BEGIN
+    UPDATE angajati.gestiune
+    SET total_brut = salar_baza * (1 + (NEW.spor / 100)) + NEW.premii_brute,
+        brut_impozabil = total_brut - (total_brut * NEW.cas_procent_val) - (total_brut * NEW.cass_procent_val),
+        cas = total_brut * NEW.cas_procent_val,
+        cass = total_brut * NEW.cass_procent_val,
+        impozit = brut_impozabil * NEW.impozit_procent_val,
+        virat_card = total_brut - impozit - (total_brut * NEW.cas_procent_val) - (total_brut * NEW.cass_procent_val) - NEW.retineri
+    WHERE nr_crt = NEW.nr_crt;
+END //
+DELIMITER ;
+
+
+
+if (!IsPostBack)
+{
+    // Retrieve the connection string from web.config
+    string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["MySQLConnection"].ConnectionString;
+
+    // Define your SQL query
+    string query = "SELECT * FROM angajati.gestiune";
+
+    using (MySqlConnection conn = new MySqlConnection(connectionString))
+    {
+        using (MySqlCommand cmd = new MySqlCommand(query, conn))
+        {
+            using (MySqlDataAdapter sda = new MySqlDataAdapter())
+            {
+                cmd.Connection = conn;
+                sda.SelectCommand = cmd;
+
+                // Create a DataTable to store the results from the query
+                DataTable dt = new DataTable();
+                sda.Fill(dt);
+
+                // Bind the DataTable to the GridView
+                GridView1.DataSource = dt;
+                GridView1.DataBind();
+            }
+        }
+    }
+}
+
+CREATE TRIGGER after_update_gestiune AFTER UPDATE ON angajati.gestiune FOR EACH ROW BEGIN     DECLARE total_brut_val DECIMAL(10, 2);     DECLARE brut_impozabil_val DECIMAL(10, 2);     DECLARE cas_val DECIMAL(10, 2);     DECLARE cass_val DECIMAL(10, 2);     DECLARE impozit_val DECIMAL(10, 2);     DECLARE virat_card_val DECIMAL(10, 2);      SET total_brut_val = NEW.salar_baza * (1 + (NEW.spor / 100)) + NEW.premii_brute;     SET brut_impozabil_val = total_brut_val - (total_brut_val * NEW.cas_procent_val) - (total_brut_val * NEW.cass_procent_val);     SET cas_val = total_brut_val * NEW.cas_procent_val;     SET cass_val = total_brut_val * NEW.cass_procent_val;     SET impozit_val = brut_impozabil_val * NEW.impozit_procent_val;     SET virat_card_val = total_brut_val - impozit_val - (total_brut_val * NEW.cas_procent_val) - (total_brut_val * NEW.cass_procent_val) - NEW.retineri;      UPDATE angajati.gestiune     SET total_brut = total_brut_val,         brut_impozabil = brut_impozabil_val,         cas = cas_val,         cass = cass_val,         impozit = impozit_val,         virat_card = virat_card_val     WHERE nr_crt = NEW.nr_crt; END
+
+-- SQL command to create 'before_insert_gestiune' trigger if it doesn't exist
+    DROP TRIGGER IF EXISTS before_insert_gestiune;
+    CREATE TRIGGER before_insert_gestiune 
+    BEFORE INSERT ON `angajati`.`gestiune` 
+    FOR EACH ROW 
+    BEGIN
+       SET NEW.procente_id = 1;
+       SET NEW.cas_procent_val = (SELECT cas_procent FROM `angajati`.`procente` WHERE `id` = NEW.procente_id);
+       SET NEW.cass_procent_val = (SELECT cass_procent FROM `angajati`.`procente` WHERE `id` = NEW.procente_id);
+       SET NEW.impozit_procent_val = (SELECT impozit_procent FROM `angajati`.`procente` WHERE `id` = NEW.procente_id);
+    END";
+      
+
+                string createTablesTriggers = @"
+                        -- SQL command to create 'gestiune' table if it doesn't exist
+            CREATE TABLE IF NOT EXISTS `angajati`.`gestiune` (
+             `nr_crt` INT NOT NULL AUTO_INCREMENT,
+             `nume` VARCHAR(45) NOT NULL,
+  `prenume` VARCHAR(45) NOT NULL,
+  `functie` VARCHAR(45) NOT NULL,
+  `salar_baza` INT NOT NULL,
+  `spor` INT NULL DEFAULT 0,
+  `premii_brute` INT NULL DEFAULT 0,
+  `total_brut` INT GENERATED ALWAYS AS (salar_baza * (1 + (spor / 100)) + premii_brute),
+  `procente_id` INT,
+  `cas_procent_val` FLOAT,
+  `cass_procent_val` FLOAT,
+  `impozit_procent_val` FLOAT,
+  `brut_impozabil` INT GENERATED ALWAYS AS (total_brut - (total_brut * cas_procent_val) - (total_brut * cass_procent_val)) VIRTUAL,
+  `cas` INT GENERATED ALWAYS AS (total_brut * cas_procent_val) VIRTUAL,
+  `cass` INT GENERATED ALWAYS AS (total_brut * cass_procent_val) VIRTUAL,
+  `impozit` INT GENERATED ALWAYS AS (brut_impozabil * impozit_procent_val) VIRTUAL,
+  `retineri` INT NULL DEFAULT 0,
+  `virat_card` INT GENERATED ALWAYS AS (total_brut - impozit - (total_brut * cas_procent_val) - (total_brut * cass_procent_val) - retineri),
+  `poza` LONGBLOB NULL,
+  PRIMARY KEY (`nr_crt`)
+);
+
+-- Delete existing data from 'gestiune' table
+DELETE FROM `angajati`.`gestiune`;
+
+-- SQL command to create 'procente' table if it doesn't exist
+CREATE TABLE IF NOT EXISTS `angajati`.`procente` (
+  `cas_procent` float NOT NULL DEFAULT '0.25',
+  `cass_procent` float NOT NULL DEFAULT '0.1',
+  `impozit_procent` float NOT NULL DEFAULT '0.1',
+  `id` int NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
+);
+
+-- SQL command to insert data into 'gestiune' table
+INSERT INTO `angajati`.`gestiune` (`nume`, `prenume`, `functie`, `salar_baza`, `spor`, `premii_brute`, `procente_id`, `retineri`, `poza`)
+VALUES ('Pacurariu', 'Adrian', 'Developer', 11000, 10, 750, 1, 0, @Poza1), ('Cooper', 'Sara', 'Manager', 18300, 20, 1000, 1, 200, @Poza2), ('Badea', 'Adrian', 'Tester', 8800, 0, 250, 1, 0, @Poza3), ('Pop', 'Gabriel', 'Product Owner', 15000, 10, 500, 1, 0, @Poza4), ('Andreea', 'Madalina', 'HR Recruiter', 9000, 0, 300, 1, 300, @Poza5), ('Popa', 'Mircea', 'Engineer', 13490, 20, 1000, 1, 0, @Poza6), ('Popa', 'Claudia', 'Analyst', 7950, 0, 200, 1, 0, @Poza7), ('Pop', 'Anastasia', 'OP Recruiter', 20000, 0, 0, 1, 0, @Poza8), ('Larsson', 'Emil', 'Team Leader', 21500, 0, 1500, 1, 1300, @Poza9), ('Cicu', 'Anca', 'Purchaser', 6000, 0, 0, 1, 0, @Poza10);";
+
+
+// after updating procente table
+
+DELIMITER //
+
+CREATE TRIGGER update_gestiune_after_procente_update
+AFTER UPDATE ON procente
+FOR EACH ROW
+BEGIN
+    UPDATE gestiune
+    SET cas_procent_val = NEW.cas_procent,
+        cass_procent_val = NEW.cass_procent,
+        impozit_procent_val = NEW.impozit_procent
+    WHERE procente_id = 1;
+END;
+//
+
+DELIMITER ;
+
+
