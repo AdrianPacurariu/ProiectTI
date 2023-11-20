@@ -84,8 +84,7 @@
     </div>
     </nav>
 
-        <asp:ContentPlaceHolder ID="MainContent" runat="server">
-            <!-- This is where the content of the child pages will be inserted -->
+        <asp:ContentPlaceHolder ID="MainContent" runat="server">           
         </asp:ContentPlaceHolder>
 
         <!-- Bootstrap core JS-->

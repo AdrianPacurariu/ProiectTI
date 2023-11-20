@@ -88,6 +88,29 @@ namespace PaymentWebApp
             return (ComputeSha256Hash(enteredPassword) == storedHashedPassword);
         }
 
+        protected void ProcenteGridView_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                string[] columnNames = { "cas_procent", "cass_procent", "impozit_procent" };
+
+                for (int i = 0; i < e.Row.Cells.Count; i++)
+                {
+                    if (float.TryParse(e.Row.Cells[i].Text, out float value) && i < columnNames.Length)
+                    {
+                        int percentage = (int)(value * 100);
+                        string columnName = columnNames[i];
+
+                        e.Row.Cells[i].Text = $"{percentage}% - <a href='#' class='editLink' onclick='editCell(this, \"{columnName}\", {i});return false;'>Editează</a>";
+                    }
+                }
+            }
+        }
+
+
+
+
+
         private static string ComputeSha256Hash(string rawData)
         {
             using (SHA256 sha256Hash = SHA256.Create())
@@ -121,11 +144,45 @@ namespace PaymentWebApp
                 }
                 catch (Exception ex)
                 {
-                    string alertScript = "<script>alert('A intervenit o eroare!');</script>";
-                    Response.Write(alertScript);
+                    string alertScript = "<script>alert('A intervenit o eroare: " + ex.Message + "');</script>";
+                    Response.Write(alertScript); ;
                 }
             }
         }
+
+        [System.Web.Services.WebMethod]
+        public static string UpdateProcenteValue(string columnName, float newValue)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["MySQLConnection"].ConnectionString;
+
+            try
+            {
+                float updatedValue = newValue / 100;
+
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    string updateQuery = $"UPDATE procente SET {columnName} = @updatedValue";
+                    MySqlCommand command = new MySqlCommand(updateQuery, connection);
+                    command.Parameters.AddWithValue("@updatedValue", updatedValue);
+
+                    connection.Open();
+                    int rowsAffected = command.ExecuteNonQuery();
+                    if (rowsAffected > 0)
+                    {
+                        return "Valoarea a fost actualizată cu succes!";
+                    }
+                    else
+                    {
+                        return "A intervenit o eroare la actualizarea valorii!";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return "A intervenit o eroare!" + ex.Message;
+            }
+        }
+
 
         [System.Web.Services.WebMethod]
         public static string ChangePassword(string newPassword)
