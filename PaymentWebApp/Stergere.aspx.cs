@@ -75,33 +75,29 @@ namespace PaymentWebApp
 
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
-                string query = "SELECT * FROM angajati.gestiune WHERE ";
+                string query = "SELECT * FROM angajati.gestiune WHERE 1=1 ";
 
                 if (!string.IsNullOrEmpty(numeInput))
                 {
-                    query += "nume LIKE @nume";
-
-                    if (!string.IsNullOrEmpty(prenumeInput))
-                    {
-                        query += " OR ";
-                    }
+                    query += "AND nume = @nume ";
                 }
 
                 if (!string.IsNullOrEmpty(prenumeInput))
                 {
-                    query += "prenume LIKE @prenume";
+                    query += "AND prenume = @prenume ";
                 }
+
 
                 MySqlCommand command = new MySqlCommand(query, connection);
 
                 if (!string.IsNullOrEmpty(numeInput))
                 {
-                    command.Parameters.AddWithValue("@nume", "%" + numeInput + "%");
+                    command.Parameters.AddWithValue("@nume", numeInput);
                 }
 
                 if (!string.IsNullOrEmpty(prenumeInput))
                 {
-                    command.Parameters.AddWithValue("@prenume", "%" + prenumeInput + "%");
+                    command.Parameters.AddWithValue("@prenume", prenumeInput);
                 }
 
                 connection.Open();
