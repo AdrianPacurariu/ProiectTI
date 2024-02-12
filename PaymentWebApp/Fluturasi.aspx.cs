@@ -32,16 +32,16 @@ namespace PaymentWebApp
                         MySqlDataAdapter adapter = new MySqlDataAdapter(query, connection);
                         adapter.Fill(ds, "GestiuneData");
 
-                        ReportDocument crystalReport = new ReportDocument();
+                        //ReportDocument crystalReport = new ReportDocument();
 
-                        crystalReport.Load(Server.MapPath("~/FluturasiSalariu.rpt"));
-                        crystalReport.SetDataSource(ds.Tables["GestiuneData"]);
+                        //crystalReport.Load(Server.MapPath("~/FluturasiSalariu.rpt"));
+                        //crystalReport.SetDataSource(ds.Tables["GestiuneData"]);
 
-                        Session["FluturasSalariu"] = crystalReport;
+                        //Session["FluturasSalariu"] = crystalReport;
 
-                        CrystalReportViewer1.ReportSourceID = "FluturasSalariu";
-                        CrystalReportViewer1.ReportSource = crystalReport;
-                        CrystalReportViewer1.RefreshReport();
+                        //CrystalReportViewer1.ReportSourceID = "FluturasSalariu";
+                        //CrystalReportViewer1.ReportSource = crystalReport;
+                        //CrystalReportViewer1.RefreshReport();
 
 
                     }

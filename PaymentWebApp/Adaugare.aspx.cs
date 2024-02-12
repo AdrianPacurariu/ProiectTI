@@ -28,7 +28,6 @@ namespace PaymentWebApp
             var spor = Request.Form["spor"];
             var premii = Request.Form["premii"];
             var retineri = Request.Form["retineri"];
-            //var poza_pusa = Request.Files["poza"];
 
             if (string.IsNullOrEmpty(nume) || string.IsNullOrEmpty(prenume) || string.IsNullOrEmpty(functie)
         || string.IsNullOrEmpty(salar) || string.IsNullOrEmpty(spor) || string.IsNullOrEmpty(premii)

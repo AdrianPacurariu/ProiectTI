@@ -99,7 +99,7 @@
                         .then(response => response.json())
                         .then(result => {
                             alert(result.d);
-                            window.location.reload(); 
+                            window.location.reload();
                         })
                         .catch(error => alert("A apărut o eroare în timpul actualizării valorii: " + error));
                 } else {
@@ -107,10 +107,5 @@
                 }
             }
         }
-
-
-
     </script>
-
-
 </asp:Content>

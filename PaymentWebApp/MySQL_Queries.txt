@@ -25,53 +25,6 @@ INSERT INTO `angajati`.`gestiune` (`nume`, `prenume`, `functie`, `salar_baza`, `
 VALUES ('Pacurariu', 'Adrian', 'Programator', 14770, 5, 1000, 1, 300, NULL);
 
 
-// After update trigger
-DELIMITER //
-CREATE TRIGGER after_update_gestiune AFTER UPDATE ON angajati.gestiune
-FOR EACH ROW
-BEGIN
-    UPDATE angajati.gestiune
-    SET total_brut = salar_baza * (1 + (NEW.spor / 100)) + NEW.premii_brute,
-        brut_impozabil = total_brut - (total_brut * NEW.cas_procent_val) - (total_brut * NEW.cass_procent_val),
-        cas = total_brut * NEW.cas_procent_val,
-        cass = total_brut * NEW.cass_procent_val,
-        impozit = brut_impozabil * NEW.impozit_procent_val,
-        virat_card = total_brut - impozit - (total_brut * NEW.cas_procent_val) - (total_brut * NEW.cass_procent_val) - NEW.retineri
-    WHERE nr_crt = NEW.nr_crt;
-END //
-DELIMITER ;
-
-
-
-if (!IsPostBack)
-{
-    // Retrieve the connection string from web.config
-    string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["MySQLConnection"].ConnectionString;
-
-    // Define your SQL query
-    string query = "SELECT * FROM angajati.gestiune";
-
-    using (MySqlConnection conn = new MySqlConnection(connectionString))
-    {
-        using (MySqlCommand cmd = new MySqlCommand(query, conn))
-        {
-            using (MySqlDataAdapter sda = new MySqlDataAdapter())
-            {
-                cmd.Connection = conn;
-                sda.SelectCommand = cmd;
-
-                // Create a DataTable to store the results from the query
-                DataTable dt = new DataTable();
-                sda.Fill(dt);
-
-                // Bind the DataTable to the GridView
-                GridView1.DataSource = dt;
-                GridView1.DataBind();
-            }
-        }
-    }
-}
-
 CREATE TRIGGER after_update_gestiune AFTER UPDATE ON angajati.gestiune FOR EACH ROW BEGIN     DECLARE total_brut_val DECIMAL(10, 2);     DECLARE brut_impozabil_val DECIMAL(10, 2);     DECLARE cas_val DECIMAL(10, 2);     DECLARE cass_val DECIMAL(10, 2);     DECLARE impozit_val DECIMAL(10, 2);     DECLARE virat_card_val DECIMAL(10, 2);      SET total_brut_val = NEW.salar_baza * (1 + (NEW.spor / 100)) + NEW.premii_brute;     SET brut_impozabil_val = total_brut_val - (total_brut_val * NEW.cas_procent_val) - (total_brut_val * NEW.cass_procent_val);     SET cas_val = total_brut_val * NEW.cas_procent_val;     SET cass_val = total_brut_val * NEW.cass_procent_val;     SET impozit_val = brut_impozabil_val * NEW.impozit_procent_val;     SET virat_card_val = total_brut_val - impozit_val - (total_brut_val * NEW.cas_procent_val) - (total_brut_val * NEW.cass_procent_val) - NEW.retineri;      UPDATE angajati.gestiune     SET total_brut = total_brut_val,         brut_impozabil = brut_impozabil_val,         cas = cas_val,         cass = cass_val,         impozit = impozit_val,         virat_card = virat_card_val     WHERE nr_crt = NEW.nr_crt; END
 
 -- SQL command to create 'before_insert_gestiune' trigger if it doesn't exist
